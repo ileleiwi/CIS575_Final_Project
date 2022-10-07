@@ -1,0 +1,33 @@
+---
+title: "Summary Statistics for Stroke Dataset"
+author: "Ikaia Leleiwi"
+date: "2022-10-07"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+knitr::opts_knit$set(root.dir = paste0("/Users/ikaialeleiwi/Desktop/School/",
+                                       "Fall_2022/CIS575/Final_Project"))
+```
+
+```{r data, include=FALSE, message=FALSE}
+stroke <- read_csv("data/brain_stroke.csv")
+```
+
+## Data Structure
+```{r data structure, echo=FALSE}
+str(stroke)
+```
+## Data Summary
+```{r data summary, echo=FALSE}
+summary(stroke)
+```
+
+## Summary Statistics
+```{r summary statistics, echo=FALSE}
+psych::describe(stroke, omit = TRUE)
+```
+
+
