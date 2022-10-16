@@ -20,8 +20,7 @@
 
 ## set working directory
 
-setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
-             "Final Project/CIS575_Final_Project"))
+setwd(paste0(""))
 
 ## ---------------------------
 
@@ -32,7 +31,7 @@ library(GGally)
 
 ##Data
 
-stroke <- read_csv("data/brain_stroke.csv")
+stroke <- read_csv("raw_data/brain_stroke.csv")
 
 ##Histogram and Bar chart plot function
 cor_numeric <- function(df){

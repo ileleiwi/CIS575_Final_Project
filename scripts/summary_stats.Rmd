@@ -8,12 +8,11 @@ output: pdf_document
 ```{r setup, include=FALSE, message=FALSE}
 library(tidyverse)
 library(kableExtra)
-knitr::opts_knit$set(root.dir = paste0("/Users/ikaialeleiwi/Desktop/School/",
-                                       "Fall_2022/CIS575/Final_Project"))
+knitr::opts_knit$set(root.dir = paste0(""))
 ```
 
 ```{r data, include=FALSE, message=FALSE}
-stroke <- read_csv("data/brain_stroke.csv")
+stroke <- read_csv("raw_data/brain_stroke.csv")
 ```
 
 ## Data Structure

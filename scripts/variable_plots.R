@@ -30,7 +30,7 @@ library(tidyverse)
 
 ##Data
 
-stroke <- read_csv("data/brain_stroke.csv")
+stroke <- read_csv("raw_data/brain_stroke.csv")
 
 ##Histogram and Bar chart plot function
 hist_all <- function(df, type=""){
