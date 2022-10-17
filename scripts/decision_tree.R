@@ -30,9 +30,7 @@ setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
 
 library(tidyverse)
 library(DMwR) #SMOTE funciton
-library(tree) #decision tree
-library(randomForest)
-library(rpart)
+library(caret) #decision tree
 
 ##Data
 
@@ -64,8 +62,27 @@ for(i in 1:2242){
   add_df <- rbind(add_df, ad)
 }
 
-stroke_even <- rbind(stroke, add_df)
+stroke_even <- rbind(stroke, add_df) %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
 
 #split data
+split_index <- createDataPartition(stroke_even$stroke,
+                                   p = .3,
+                                   list = FALSE,
+                                   time = 1)
 
+c_train <- stroke_even %>%
+  slice(split_index)
+
+c_test <- stroke_even %>%
+  slice(-split_index)
+#pruning method Minimal Description Length (MDL) used in KNIME
+
+#method = "rpart", CART model
+set.seed(123)
+cart_fit <- train(stroke ~ ., 
+                    data = stroke_even,
+                    method = "rpart",
+)
