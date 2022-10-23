@@ -36,12 +36,25 @@ library(caret) #decision tree
 
 stroke <- read_csv("raw_data/brain_stroke.csv")
 
+
+#split data
+split_index <- createDataPartition(stroke$stroke,
+                                   p = .3,
+                                   list = FALSE,
+                                   time = 1)
+
+c_train <- stroke %>%
+  slice(split_index)
+
+c_test <- stroke %>%
+  slice(-split_index)
+
 #check target variable balance
-stroke %>%
+c_train %>%
   group_by(stroke) %>%
   count()
 
-#oversample stroke = 1, target number to add 4485
+#oversample stroke = 1, target number to add 1365
 add_df <- data.frame(gender = character(),
                      age = double(),
                      hypertension = double(),
@@ -54,30 +67,21 @@ add_df <- data.frame(gender = character(),
                      smoking_status = character(),
                      stroke = double())
 
-for(i in 1:2242){
-  ad <- stroke%>%
+for(i in 1:682){
+  ad <- c_train %>%
     filter(stroke == 1) %>%
     sample_n(size = 2)
   
   add_df <- rbind(add_df, ad)
 }
 
-stroke_even <- rbind(stroke, add_df) %>%
+c_train_even <- rbind(c_train, add_df) %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
          stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
 
-#split data
-split_index <- createDataPartition(stroke_even$stroke,
-                                   p = .3,
-                                   list = FALSE,
-                                   time = 1)
 
-c_train <- stroke_even %>%
-  slice(split_index)
 
-c_test <- stroke_even %>%
-  slice(-split_index)
 #pruning method Minimal Description Length (MDL) used in KNIME
 
 #method = "rpart", CART model
