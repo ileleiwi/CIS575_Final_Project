@@ -30,63 +30,184 @@ setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
 
 library(tidyverse)
 library(DMwR) #SMOTE funciton
-library(caret) #decision tree
-
+library(caret) #createDataPartition, confustionMatrix
+library(rpart) #decision tree
+library(rpart.plot) #visualize tree
 ##Data
 
 stroke <- read_csv("raw_data/brain_stroke.csv")
 
-
 #split data
-split_index <- createDataPartition(stroke$stroke,
-                                   p = .3,
+set.seed(123)
+split_index <- caret::createDataPartition(stroke$stroke,
+                                   p = .3, 
                                    list = FALSE,
-                                   time = 1)
+                                   time = 1) #divide data into 30% train and 70% test
 
 c_train <- stroke %>%
-  slice(split_index)
+  slice(split_index) 
 
 c_test <- stroke %>%
-  slice(-split_index)
+  slice(-split_index) %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
 #check target variable balance
 c_train %>%
   group_by(stroke) %>%
   count()
 
-#oversample stroke = 1, target number to add 1365
-add_df <- data.frame(gender = character(),
-                     age = double(),
-                     hypertension = double(),
-                     heart_disease = double(),
-                     ever_married = character(),
-                     work_type = character(),
-                     Residence_type = character(),
-                     avg_glucose_level = double(),
-                     bmi = double(),
-                     smoking_status = character(),
-                     stroke = double())
-
-for(i in 1:682){
-  ad <- c_train %>%
-    filter(stroke == 1) %>%
-    sample_n(size = 2)
-  
-  add_df <- rbind(add_df, ad)
+##bootstrapping function
+resample_up_down <- function(df, target_col, iter=1, up_or_down, lower_val = 1){
+   
+  if(up_or_down == "up"){
+    df_out <- df
+    for(i in 1:iter){
+      ad <- df %>%
+        filter(.[[target_col]] == lower_val) %>%
+        sample_n(size = 1)
+      
+      df_out <- rbind(df_out, ad)
+    }
+  }else if (up_or_down == "down"){
+    keep_df <- df %>%
+      filter(.[[target_col]] == lower_val) 
+    samp_df <- df %>%
+      filter(.[[target_col]] != lower_val) %>%
+      sample_n(size = iter)
+    
+    df_out <- rbind(keep_df, samp_df)
+  }
+  return(df_out)
 }
 
-c_train_even <- rbind(c_train, add_df) %>%
+
+#oversample stroke = 1, target number to add 1369
+c_train_up <- resample_up_down(df = c_train,
+                                 target_col = "stroke", 
+                                 iter = 1369, 
+                                 up_or_down = "up", 
+                                 lower_val = 1) %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
+
+#downsample stroke = 0, target number to reduce to 63
+c_train_down <- resample_up_down(df = c_train,
+                                 target_col = "stroke", 
+                                 iter = 63, 
+                                 up_or_down = "down", 
+                                 lower_val = 1) %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
          stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
 
+##SMOTE oversample
+c_train_smote <- as.data.frame(c_train) #transform to dataframe
+c_train_smote[sapply(c_train_smote, is.character)] <- lapply(c_train_smote[sapply(c_train_smote, is.character)], 
+                                       as.factor) #transform chr cols to factors
+c_train_smote$stroke <- factor(c_train_smote$stroke) #transform target col to factor
+c_train_smote <- SMOTE(stroke ~ .,
+                       data = c_train_smote,
+                       perc.over = 1100,
+                       perc.under = 100)
 
+c_train_smote <- c_train_smote %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
+
+#change c_train to have character factor target var
+c_train <- c_train %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
 #pruning method Minimal Description Length (MDL) used in KNIME
-
 #method = "rpart", CART model
-set.seed(123)
-cart_fit <- train(stroke ~ ., 
-                    data = stroke_even,
-                    method = "rpart",
-)
+models <- list()
+
+for(i in c("c_train", "c_train_up", "c_train_down", "c_train_smote")){
+  set.seed(123)
+  models[[length(models) + 1]] <- rpart(stroke ~ ., 
+                                        data = as.data.frame(get(i)), 
+                                        method = "class", 
+                                        cp=0.0000000000001)
+  print(i)
+}
+
+names(models) <- c("c_train", "c_train_up", "c_train_down", "c_train_smote")
+
+#visualize models and check var importance
+
+compare_trees <- function(mod_list){
+  combined_cp <- data.frame(CP = numeric(),
+                            nsplit = numeric(),
+                            `rel error` = numeric(),
+                            xerror = numeric(),
+                            xstd = numeric(),
+                            keep = character(),
+                            model = character())
+  
+  for(i in 1:length(mod_list)){
+    cp_df <- mod_list[[i]] %>% 
+      printcp() %>% 
+      as.data.frame() 
+    
+    cp_df <- cp_df %>%
+      mutate(keep = ifelse(xerror < min(cp_df$xerror) + xstd, "yes", "no" ),
+             model = names(mod_list[i]))
+    
+    combined_cp <- rbind(combined_cp, cp_df)
+  }
+  
+  return(combined_cp)
+}
+
+cp_df <- compare_trees(models)
+cp_df %>%
+  filter(nsplit != 0,
+         keep == "yes") 
+cp_df %>%
+  arrange(xerror)
+ 
+#c_train
+models[[1]] %>% rpart.plot()
+models[[1]] %>% printcp()
+models[[1]] %>% plotcp()
+models[[1]]$variable.importance
+
+#c_train_up
+models[[2]] %>% rpart.plot()
+models[[2]] %>% printcp()
+models[[2]] %>% plotcp()
+models[[2]]$variable.importance
+
+#c_train_down
+models[[3]] %>% rpart.plot()
+models[[3]] %>% printcp()
+models[[3]] %>% plotcp()
+models[[3]]$variable.importance
+
+#c_train_smote
+models[[4]] %>% rpart.plot()
+models[[4]] %>% printcp()
+models[[4]] %>% plotcp()
+models[[4]]$variable.importance
+
+
+
+
+#predict test data using models
+preds <- list()
+
+for(i in models){
+  set.seed(123)
+  preds[[length(preds) + 1]] <- predict(i, c_test, type = "class")
+}
+
+confusionMatrix(factor(preds[[1]]), factor(c_test$stroke))
+confusionMatrix(factor(preds[[2]]), factor(c_test$stroke))
+confusionMatrix(factor(preds[[3]]), factor(c_test$stroke))
+confusionMatrix(factor(preds[[4]]), factor(c_test$stroke)) 
+
+
+
+
