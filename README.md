@@ -37,3 +37,7 @@ Next each numeric variable was plotted against each other numeric variable to se
 The scatterplots indicate that potential correlations could exist between "age", "bmi", and "avg_glucose_levels". Pearson correlation was calculated for each pair of these variables and the results are shown below.
 
 ![pearson cor plots](/figures/cor_plot.svg)
+
+The correlation coefficients are relatively low so we may move forward with the assumption that variable are not correlated.
+
+More summary statistics can be viewed ~[here](/documents/summary_stats.pdf)
