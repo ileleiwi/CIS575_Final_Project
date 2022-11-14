@@ -122,16 +122,13 @@ c_train <- c_train %>%
 
 #pruning method Minimal Description Length (MDL) used in KNIME
 #method = "rpart", CART model
-models <- list()
+model_dfs <- list(c_train, c_train_up, c_train_down, c_train_smote)
 
-for(i in c("c_train", "c_train_up", "c_train_down", "c_train_smote")){
-  set.seed(123)
-  models[[length(models) + 1]] <- rpart(stroke ~ ., 
-                                        data = as.data.frame(get(i)), 
-                                        method = "class", 
-                                        cp=0.0000000000001)
-  print(i)
-}
+set.seed(123)
+models <- map(model_dfs, ~rpart(stroke ~ .,
+                             data = as.data.frame(.x),
+                             method = "class", 
+                             cp=-1))
 
 names(models) <- c("c_train", "c_train_up", "c_train_down", "c_train_smote")
 
@@ -147,9 +144,9 @@ compare_trees <- function(mod_list){
                             model = character())
   
   for(i in 1:length(mod_list)){
-    cp_df <- mod_list[[i]] %>% 
-      printcp() %>% 
-      as.data.frame() 
+    cp_df <- mod_list[[i]] %>%
+      printcp() %>%
+      as.data.frame()
     
     cp_df <- cp_df %>%
       mutate(keep = ifelse(xerror < min(cp_df$xerror) + xstd, "yes", "no" ),
@@ -167,47 +164,17 @@ cp_df %>%
          keep == "yes") 
 cp_df %>%
   arrange(xerror)
- 
-#c_train
-models[[1]] %>% rpart.plot()
-models[[1]] %>% printcp()
-models[[1]] %>% plotcp()
-models[[1]]$variable.importance
 
-#c_train_up
-models[[2]] %>% rpart.plot()
-models[[2]] %>% printcp()
-models[[2]] %>% plotcp()
-models[[2]]$variable.importance
-
-#c_train_down
-models[[3]] %>% rpart.plot()
-models[[3]] %>% printcp()
-models[[3]] %>% plotcp()
-models[[3]]$variable.importance
-
-#c_train_smote
-models[[4]] %>% rpart.plot()
-models[[4]] %>% printcp()
-models[[4]] %>% plotcp()
-models[[4]]$variable.importance
-
-
-
+#observe model variable importance and complexity paramaters
+map(models, ~printcp(.x))
+map(models, ~plotcp(.x))
+map(models, ~print(.x$variable.importance))
 
 #predict test data using models
-preds <- list()
+set.seed(123)
+preds <- map(models, .f = ~predict(.x, c_test, type = "class"))
 
-for(i in models){
-  set.seed(123)
-  preds[[length(preds) + 1]] <- predict(i, c_test, type = "class")
-}
-
-confusionMatrix(factor(preds[[1]]), factor(c_test$stroke))
-confusionMatrix(factor(preds[[2]]), factor(c_test$stroke))
-confusionMatrix(factor(preds[[3]]), factor(c_test$stroke))
-confusionMatrix(factor(preds[[4]]), factor(c_test$stroke)) 
-
+walk(preds, ~print(confusionMatrix(factor(.x), factor(c_test$stroke))))
 
 
 
