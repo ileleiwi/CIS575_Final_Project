@@ -32,4 +32,4 @@ It seems that the target variable "stroke" is highly unbalanced, favoring the ne
 
 Next each numeric variable was plotted against each other numeric variable to see if any correlation could be seen
 
-![cor scatter plots](figures/scatter_cor_plots.svg)
+![cor scatter plots](/figures/scatter_cor_plots.svg)
