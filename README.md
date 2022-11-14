@@ -21,3 +21,8 @@ Patomella, Ann-Helen, Gustav Mickols, Eric Asaba, Gunnar Nilsson, Cecilia Fridé
 # Business Objective
 
 Through the implementation of various machine learning and predictive modeling techniques our group intends to build a stroke prediction model using patient data of individual lifestyle and health characteristics. Specifically, our goal is to determine a patient's risk of having a stroke as early in life as possible with the clinical objective of summarily prescribing stroke prevention medication and appropriate lifestyle changes to produce more favorable patient outcomes. The intent is to also create a model with appeal to private firms with vested interests in an individual's stroke proclivity. Such targets include companies in the pharmaceutical, travel, insurance, healthcare, and health supplement sectors.
+
+# Preliminary Data Exploration and Findings
+
+Initial exploration of the Stroke dataset involved creating histograms of each variable to visualize the distributions.
+![variable plots]("https://github.com/ileleiwi/CIS575_Final_Project/blob/main/figures/variable_plots.pdf")
