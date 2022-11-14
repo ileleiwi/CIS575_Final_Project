@@ -27,3 +27,9 @@ Through the implementation of various machine learning and predictive modeling t
 Initial exploration of the Stroke dataset involved creating histograms of each variable to visualize the distributions.
 
 ![variable plots](/figures/variable_plots.svg)
+
+It seems that the target variable "stroke" is highly unbalanced, favoring the negative class (no stroke). The same imbalance favoring the negative class is observed in "hypertension" and "heart_disease" variables. "bmi" is relatively normally distributed while "avg_glucose_level" is right skewed. The nominal variables "gender" and "Residence_type" are the most evenly balanced variable of this data type, although the dataset included nearly 1000 more observations from Females than from Males.
+
+Next each numeric variable was plotted against each other numeric variable to see if any correlation could be seen
+
+![cor scatter plots](figures/scatter_cor_plots.svg)

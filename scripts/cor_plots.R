@@ -20,7 +20,8 @@
 
 ## set working directory
 
-setwd(paste0(""))
+setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
+             "Final Project/CIS575_Final_Project"))
 
 ## ---------------------------
 
@@ -59,15 +60,16 @@ cor_numeric <- function(df){
       theme_bw() 
     return(p)
   }
-  
+
   plist <- list()
   for(i in 1:length(colnames(df_n))){
     for(j in length(colnames(df_n)):1){
-     plist[[length(plist)+1]] <-  scatter_plot(df = df_n, 
-                                               var_x = colnames(df_n)[i], 
+     plist[[length(plist)+1]] <-  scatter_plot(df = df_n,
+                                               var_x = colnames(df_n)[i],
                                                var_y = colnames(df_n)[j])
     }
   }
+  
   # Arrange histograms in one plot
   out_plot <- do.call("plot_grid", plist)
   return(out_plot)
@@ -100,6 +102,14 @@ pdf("figures/scatter_cor_plots.pdf", height = 10, width = 20)
 cor_numeric(stroke)
 dev.off()
 
+svg("figures/scatter_cor_plots.svg", height = 10, width = 20)
+cor_numeric(stroke)
+dev.off()
+
 pdf("figures/cor_plot.pdf", height = 10, width = 20)
+ggpairs(stroke_agl_bmi_age, ggplot2::aes(color=stroke))
+dev.off()
+
+svg("figures/cor_plot.svg", height = 10, width = 20)
 ggpairs(stroke_agl_bmi_age, ggplot2::aes(color=stroke))
 dev.off()
