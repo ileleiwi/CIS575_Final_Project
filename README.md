@@ -40,4 +40,4 @@ The scatterplots indicate that potential correlations could exist between "age",
 
 The correlation coefficients are relatively low so we may move forward with the assumption that variable are not correlated.
 
-More summary statistics can be viewed ![here](/documents/summary_stats.pdf)
+More summary statistics can be viewed [here](/documents/summary_stats.pdf)
