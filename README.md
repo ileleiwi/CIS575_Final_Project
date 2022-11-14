@@ -33,3 +33,7 @@ It seems that the target variable "stroke" is highly unbalanced, favoring the ne
 Next each numeric variable was plotted against each other numeric variable to see if any correlation could be seen
 
 ![cor scatter plots](/figures/scatter_cor_plots.svg)
+
+The scatterplots indicate that potential correlations could exist between "age", "bmi", and "avg_glucose_levels". Pearson correlation was calculated for each pair of these variables and the results are shown below.
+
+![pearson cor plots](/figures/cor_plot.svg)
