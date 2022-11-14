@@ -25,4 +25,5 @@ Through the implementation of various machine learning and predictive modeling t
 # Preliminary Data Exploration and Findings
 
 Initial exploration of the Stroke dataset involved creating histograms of each variable to visualize the distributions.
+
 ![variable plots](/figures/variable_plots.svg)

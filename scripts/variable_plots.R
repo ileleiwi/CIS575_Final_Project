@@ -20,8 +20,7 @@
 
 ## set working directory
 
-setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
-             "Final Project/CIS575_Final_Project"))
+setwd(paste0(""))
 
 ## ---------------------------
 
@@ -109,7 +108,6 @@ pdf("figures/variable_plots.pdf", height = 10, width = 10)
 hist_all(stroke)
 dev.off()
 
-png("figures/variable_plots.png", height = 10, width = 10)
+svg("figures/variable_plots.svg", height = 10, width = 10)
 hist_all(stroke)
 dev.off()
-
