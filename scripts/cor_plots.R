@@ -20,8 +20,7 @@
 
 ## set working directory
 
-setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
-             "Final Project/CIS575_Final_Project"))
+setwd(paste0(""))
 
 ## ---------------------------
 
@@ -107,9 +106,21 @@ cor_numeric(stroke)
 dev.off()
 
 pdf("figures/cor_plot.pdf", height = 10, width = 20)
-ggpairs(stroke_agl_bmi_age, ggplot2::aes(color=stroke))
+ggpairs(stroke_agl_bmi_age, 
+        ggplot2::aes(color=stroke),
+        upper=list(wrap=list(size=15))) +
+  theme(axis.text = element_text(size = 15),
+        title = element_text(size = 15),
+        strip.text = element_text(size = 15),
+        legend.text = element_text(size = 15))
 dev.off()
 
 svg("figures/cor_plot.svg", height = 10, width = 20)
-ggpairs(stroke_agl_bmi_age, ggplot2::aes(color=stroke))
+ggpairs(stroke_agl_bmi_age, 
+        ggplot2::aes(color=stroke),
+        upper=list(wrap=list(size=15))) +
+  theme(axis.text = element_text(size = 15),
+        title = element_text(size = 15),
+        strip.text = element_text(size = 15),
+        legend.text = element_text(size = 15))
 dev.off()
