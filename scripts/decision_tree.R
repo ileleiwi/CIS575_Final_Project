@@ -166,18 +166,13 @@ cp_df %>%
 
 #observe model variable importance and complexity paramaters
 map(models, ~printcp(.x))
-cp_plots <- map(models, ~plotcp(.x))
-names(cp_plots) <- names(models)
+map(models, ~plotcp(.x))
 
-svg_out <- function(p,obj){
-  path <- glue:glue("figures/", {p}, ".svg")
-  svg(obj, filename = path, height = 10, width = 20)
-  dev.off()
+for(i in 1:length(models)){
+  svg(paste0("figures/", names(models[i]), "_cp_plots.svg"))
+  plotcp(models[[i]])
+  dev.off
 }
-
-walk2(cp_plots, names(cp_plots) , ~svg_out(.y, .x))
-
-
 
 map(models, ~print(.x$variable.importance))
 

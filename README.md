@@ -55,3 +55,5 @@ c_train_smote = reballancing using the SMOTE algorithm as implemented in the `DM
 c_train_down = random downsampling of negative class observations \
 
 The default 10-fold cross-validation results are shown below relating the complexity parameter of each model to the cross-validated error.
+
+[c_train cp plot](/figures/c_train_cp_plot.svg)
