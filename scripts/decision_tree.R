@@ -161,13 +161,24 @@ compare_trees <- function(mod_list){
 cp_df <- compare_trees(models)
 cp_df %>%
   filter(nsplit != 0,
-         keep == "yes") 
-cp_df %>%
+         keep == "yes") %>%
   arrange(xerror)
 
 #observe model variable importance and complexity paramaters
 map(models, ~printcp(.x))
-map(models, ~plotcp(.x))
+cp_plots <- map(models, ~plotcp(.x))
+names(cp_plots) <- names(models)
+
+svg_out <- function(p,obj){
+  path <- glue:glue("figures/", {p}, ".svg")
+  svg(obj, filename = path, height = 10, width = 20)
+  dev.off()
+}
+
+walk2(cp_plots, names(cp_plots) , ~svg_out(.y, .x))
+
+
+
 map(models, ~print(.x$variable.importance))
 
 #predict test data using models
