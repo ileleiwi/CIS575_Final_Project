@@ -67,3 +67,25 @@ The default 10-fold cross-validation results are shown below relating the comple
 
 ## Down-sampled dataset
 ![c_train cp plot](/figures/c_train_down_cp_plot.svg)
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> stroke </th>
+   <th style="text-align:right;"> no_stroke </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> stroke </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 73 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> no_stroke </td>
+   <td style="text-align:right;"> 166 </td>
+   <td style="text-align:right;"> 3228 </td>
+  </tr>
+</tbody>
+</table>

@@ -190,5 +190,12 @@ preds <- map(models, .f = ~predict(.x, c_test, type = "class"))
 
 walk(preds, ~print(confusionMatrix(factor(.x), factor(c_test$stroke))))
 
+kableExtra::kable(confusionMatrix(factor(preds[[1]]), factor(c_test$stroke)))
+
+t <- as.list(confusionMatrix(factor(preds[[1]]), factor(c_test$stroke)))
+
+knitr::export_table(as.matrix(t$table), format = "html")
 
 
+
+                
