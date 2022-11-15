@@ -33,6 +33,8 @@ library(DMwR) #SMOTE funciton
 library(caret) #createDataPartition, confustionMatrix
 library(rpart) #decision tree
 library(rpart.plot) #visualize tree
+library(insight)
+library(knitr)
 ##Data
 
 stroke <- read_csv("raw_data/brain_stroke.csv")
@@ -190,12 +192,16 @@ preds <- map(models, .f = ~predict(.x, c_test, type = "class"))
 
 walk(preds, ~print(confusionMatrix(factor(.x), factor(c_test$stroke))))
 
-kableExtra::kable(confusionMatrix(factor(preds[[1]]), factor(c_test$stroke)))
 
-t <- as.list(confusionMatrix(factor(preds[[1]]), factor(c_test$stroke)))
+#produce html tables for github
+print_html_table <- function(prediction_obj, test_target_col){
+  test_dat <- factor(test_target_col)
+  cmat <- as.list(confusionMatrix(factor(prediction_obj), test_dat))
+  return(kable(cmat$table, format = "html"))
+}
 
-knitr::export_table(as.matrix(t$table), format = "html")
 
+map(preds, ~print_html_table(.x, c_test$stroke))
 
 
                 

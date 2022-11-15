@@ -68,6 +68,8 @@ The default 10-fold cross-validation results are shown below relating the comple
 ## Down-sampled dataset
 ![c_train cp plot](/figures/c_train_down_cp_plot.svg)
 
+Each tree model was tested on the test dataset and the confusion matrices are displayed below
+## Unbalanced dataset
 <table>
  <thead>
   <tr>
@@ -86,6 +88,75 @@ The default 10-fold cross-validation results are shown below relating the comple
    <td style="text-align:left;"> no_stroke </td>
    <td style="text-align:right;"> 166 </td>
    <td style="text-align:right;"> 3228 </td>
+  </tr>
+</tbody>
+</table>
+
+## Up-sampled dataset
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> stroke </th>
+   <th style="text-align:right;"> no_stroke </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> stroke </td>
+   <td style="text-align:right;"> 47 </td>
+   <td style="text-align:right;"> 238 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> no_stroke </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 3063 </td>
+  </tr>
+</tbody>
+</table>
+
+## Rebalanced with SMOTE dataset
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> stroke </th>
+   <th style="text-align:right;"> no_stroke </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> stroke </td>
+   <td style="text-align:right;"> 153 </td>
+   <td style="text-align:right;"> 1085 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> no_stroke </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 2216 </td>
+  </tr>
+</tbody>
+</table>
+
+## Down-sampled dataset
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> stroke </th>
+   <th style="text-align:right;"> no_stroke </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> stroke </td>
+   <td style="text-align:right;"> 113 </td>
+   <td style="text-align:right;"> 683 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> no_stroke </td>
+   <td style="text-align:right;"> 72 </td>
+   <td style="text-align:right;"> 2618 </td>
   </tr>
 </tbody>
 </table>
