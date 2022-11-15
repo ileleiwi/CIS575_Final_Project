@@ -94,10 +94,75 @@ Each tree model was tested on the test dataset and the confusion matrices are di
 </td></tr> </table>
 
 ## Up-sampled dataset
+<table>
+<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
+<tr><td>
 
+|          | stroke| no_stroke|
+|:---------|------:|---------:|
+|stroke    |     47|       238|
+|no_stroke |    138|      3063|
+
+</td><td>
+
+|               |         x|
+|:--------------|---------:|
+|Accuracy       | 0.8921400|
+|Kappa          | 0.1449696|
+|AccuracyLower  | 0.8813683|
+|AccuracyUpper  | 0.9022489|
+|AccuracyNull   | 0.9469306|
+|AccuracyPValue | 1.0000000|
+|McnemarPValue  | 0.0000003|
+
+</td></tr> </table>
 
 ## Rebalanced with SMOTE dataset
+<table>
+<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
+<tr><td>
+
+|          | stroke| no_stroke|
+|:---------|------:|---------:|
+|stroke    |    113|       683|
+|no_stroke |     72|      2618|
+
+</td><td>
+
+|               |         x|
+|:--------------|---------:|
+|Accuracy       | 0.7834194|
+|Kappa          | 0.1578487|
+|AccuracyLower  | 0.7693673|
+|AccuracyUpper  | 0.7969946|
+|AccuracyNull   | 0.9469306|
+|AccuracyPValue | 1.0000000|
+|McnemarPValue  | 0.0000000|
+
+</td></tr> </table>
 
 
 ## Down-sampled dataset
+<table>
+<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
+<tr><td>
+
+|          | stroke| no_stroke|
+|:---------|------:|---------:|
+|stroke    |    153|      1085|
+|no_stroke |     32|      2216|
+
+</td><td>
+
+|               |         x|
+|:--------------|---------:|
+|Accuracy       | 0.6795754|
+|Kappa          | 0.1351812|
+|AccuracyLower  | 0.6637957|
+|AccuracyUpper  | 0.6950535|
+|AccuracyNull   | 0.9469306|
+|AccuracyPValue | 1.0000000|
+|McnemarPValue  | 0.0000000|
+
+</td></tr> </table>
 
