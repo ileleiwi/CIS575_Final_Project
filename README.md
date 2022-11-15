@@ -74,7 +74,7 @@ Each tree model was tested on the test dataset and the confusion matrices are di
 <tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
 <tr><td>
 
-          | stroke| no_stroke|
+|          | stroke| no_stroke|
 |:---------|------:|---------:|
 |stroke    |     19|        73|
 |no_stroke |    166|      3228|
