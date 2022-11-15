@@ -200,10 +200,15 @@ print_git_confmat <- function(prediction_obj, test_target_col, type, cmat_elemen
   return(kable(cmat[[cmat_element]], format = type))
 }
 
-map(preds, ~print_html_table(.x, c_test$stroke))
+map(preds, ~print_git_confmat(prediction_obj = .x, 
+                              test_target_col = c_test$stroke,
+                              type = "markdown",
+                              cmat_element = "table"))
+map(preds, ~print_git_confmat(prediction_obj = .x, 
+                              test_target_col = c_test$stroke,
+                              type = "markdown",
+                              cmat_element = "overall"))
 
 t <- confusionMatrix(factor(preds[[1]]), factor(c_test$stroke))
-kable(t$overall, format = "html")
 
-t[["table"]]
                 
