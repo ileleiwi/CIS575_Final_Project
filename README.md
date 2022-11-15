@@ -47,13 +47,23 @@ More summary statistics can be viewed [here](/documents/summary_stats.pdf)
 Our data analysis plan includes implementing cross-validated decision trees with different strategies to balance the data (no correction, up sampling positive class, down sampling negative class, SMOTE rebalancing) and then use the strategy that provides the best results (most accurate model) to train a bagged random forest model. The results of the random forest model will be used to further inform feature selection for a logistic regression. Finally, all models will be compared and the best one chosen. Prior to logistic regression, numeric variables will be min-max scaled and dummy variables will be created from categorical variable in the data. We will divide the data into a training and testing set where appropriate, each partition containing 30% and 70% of the data respectively.
 
 # Decision Tree Classification
-A CART classification decision tree splitting with the gini index was implemented using the `rpart` library in R. Various balancing strategies were implemented on the training data to balance the target varaible classes.
+A CART classification decision tree splitting with the gini index was implemented using the `rpart` library in R. Various balancing strategies were implemented on the training data to balance the target variable classes.
 
 c_train = no balancing \
 c_train_p = random upsampling of positive class observations \
-c_train_smote = reballancing using the SMOTE algorithm as implemented in the `DMwR`\
+c_train_smote = rebalancing using the SMOTE algorithm as implemented in the `DMwR`\
 c_train_down = random downsampling of negative class observations \
 
 The default 10-fold cross-validation results are shown below relating the complexity parameter of each model to the cross-validated error.
 
+## Unbalanced dataset
 ![c_train cp plot](/figures/c_train_cp_plot.svg)
+
+## Up-sampled dataset
+![c_train cp plot](/figures/c_train_up_cp_plot.svg)
+
+## Rebalanced with SMOTE dataset
+![c_train cp plot](/figures/c_train_smote_cp_plot.svg)
+
+## Down-sampled dataset
+![c_train cp plot](/figures/c_train_down_cp_plot.svg)

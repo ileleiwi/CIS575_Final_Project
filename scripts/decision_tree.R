@@ -169,10 +169,18 @@ map(models, ~printcp(.x))
 map(models, ~plotcp(.x))
 
 for(i in 1:length(models)){
-  svg(paste0("figures/", names(models[i]), "_cp_plots.svg"))
+  pdf(paste0("figures/", names(models[i]), "_cp_plots.pdf"))
   plotcp(models[[i]])
   dev.off
 }
+
+#
+names(models)
+plotcp(models[[1]])
+plotcp(models[[2]])
+plotcp(models[[3]])
+plotcp(models[[4]])
+
 
 map(models, ~print(.x$variable.importance))
 
