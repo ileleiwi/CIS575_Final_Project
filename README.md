@@ -49,9 +49,9 @@ Our data analysis plan includes implementing cross-validated decision trees with
 # Decision Tree Classification
 A CART classification decision tree splitting with the gini index was implemented using the `rpart` library in R. Various balancing strategies were implemented on the training data to balance the target varaible classes.
 
-c_train = no balancing \n
-c_train_p = random upsampling of positive class observations \n
-c_train_smote = reballancing using the SMOTE algorithm as implemented in the `DMwR`\n
-c_train_down = random downsampling of negative class observations \n
+c_train = no balancing \
+c_train_p = random upsampling of positive class observations \
+c_train_smote = reballancing using the SMOTE algorithm as implemented in the `DMwR`\
+c_train_down = random downsampling of negative class observations \
 
 The default 10-fold cross-validation results are shown below relating the complexity parameter of each model to the cross-validated error.
