@@ -194,14 +194,16 @@ walk(preds, ~print(confusionMatrix(factor(.x), factor(c_test$stroke))))
 
 
 #produce html tables for github
-print_html_table <- function(prediction_obj, test_target_col){
+print_git_confmat <- function(prediction_obj, test_target_col, type, cmat_element){
   test_dat <- factor(test_target_col)
   cmat <- as.list(confusionMatrix(factor(prediction_obj), test_dat))
-  return(kable(cmat$table, format = "html"))
+  return(kable(cmat[[cmat_element]], format = type))
 }
-
 
 map(preds, ~print_html_table(.x, c_test$stroke))
 
+t <- confusionMatrix(factor(preds[[1]]), factor(c_test$stroke))
+kable(t$overall, format = "html")
 
+t[["table"]]
                 

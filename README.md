@@ -70,174 +70,33 @@ The default 10-fold cross-validation results are shown below relating the comple
 
 Each tree model was tested on the test dataset and the confusion matrices are displayed below
 ## Unbalanced dataset
+<table>
+<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
+<tr><td>
+|          | stroke| no_stroke|
+|:---------|------:|---------:|
+|stroke    |     19|        73|
+|no_stroke |    166|      3228|
 
-|Table 1|Table 2|
-|--|--|
-|<table> <tr><th>Table 1 Heading 1</th><th>Table 1 Heading 2</th></tr><tr><td>Row 1 Column 1</td><td>Row 1 Column 2</td></tr> </table>| <table> <tr><th>Table 2 Heading 1</th><th>Table 2 Heading 2</th></tr><tr><td>Row 1 Column 1</td><td>Row 1 Column 2</td></tr> </table>|
+</td><td>
 
-|Confusion Matrix|Model Stats|
-|--|--|
-|<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> stroke </th>
-   <th style="text-align:right;"> no_stroke </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> stroke </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> 73 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> no_stroke </td>
-   <td style="text-align:right;"> 166 </td>
-   <td style="text-align:right;"> 3228 </td>
-  </tr>
-</tbody>
-</table>
+|               |         x|
+|:--------------|---------:|
+|Accuracy       | 0.9314400|
+|Kappa          | 0.1056568|
+|AccuracyLower  | 0.9225402|
+|AccuracyUpper  | 0.9396076|
+|AccuracyNull   | 0.9469306|
+|AccuracyPValue | 0.9999622|
+|McnemarPValue  | 0.0000000|
+
+</td></tr> </table>
 
 ## Up-sampled dataset
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> stroke </th>
-   <th style="text-align:right;"> no_stroke </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> stroke </td>
-   <td style="text-align:right;"> 47 </td>
-   <td style="text-align:right;"> 238 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> no_stroke </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 3063 </td>
-  </tr>
-</tbody>
-</table>|<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> x </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Accuracy </td>
-   <td style="text-align:right;"> 0.9314400 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Kappa </td>
-   <td style="text-align:right;"> 0.1056568 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyLower </td>
-   <td style="text-align:right;"> 0.9225402 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyUpper </td>
-   <td style="text-align:right;"> 0.9396076 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyNull </td>
-   <td style="text-align:right;"> 0.9469306 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyPValue </td>
-   <td style="text-align:right;"> 0.9999622 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> McnemarPValue </td>
-   <td style="text-align:right;"> 0.0000000 </td>
-  </tr>
-</tbody>
-</table>|
+
 
 ## Rebalanced with SMOTE dataset
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> stroke </th>
-   <th style="text-align:right;"> no_stroke </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> stroke </td>
-   <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 1085 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> no_stroke </td>
-   <td style="text-align:right;"> 32 </td>
-   <td style="text-align:right;"> 2216 </td>
-  </tr>
-</tbody>
-</table>
+
 
 ## Down-sampled dataset
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> stroke </th>
-   <th style="text-align:right;"> no_stroke </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> stroke </td>
-   <td style="text-align:right;"> 113 </td>
-   <td style="text-align:right;"> 683 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> no_stroke </td>
-   <td style="text-align:right;"> 72 </td>
-   <td style="text-align:right;"> 2618 </td>
-  </tr>
-</tbody>
-</table>| <table>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> x </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Accuracy </td>
-   <td style="text-align:right;"> 0.9314400 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Kappa </td>
-   <td style="text-align:right;"> 0.1056568 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyLower </td>
-   <td style="text-align:right;"> 0.9225402 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyUpper </td>
-   <td style="text-align:right;"> 0.9396076 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyNull </td>
-   <td style="text-align:right;"> 0.9469306 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AccuracyPValue </td>
-   <td style="text-align:right;"> 0.9999622 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> McnemarPValue </td>
-   <td style="text-align:right;"> 0.0000000 </td>
-  </tr>
-</tbody>
-</table>|
+
