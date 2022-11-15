@@ -159,4 +159,41 @@ Each tree model was tested on the test dataset and the confusion matrices are di
    <td style="text-align:right;"> 2618 </td>
   </tr>
 </tbody>
+</table>| <table>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> x </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Accuracy </td>
+   <td style="text-align:right;"> 0.9314400 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Kappa </td>
+   <td style="text-align:right;"> 0.1056568 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AccuracyLower </td>
+   <td style="text-align:right;"> 0.9225402 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AccuracyUpper </td>
+   <td style="text-align:right;"> 0.9396076 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AccuracyNull </td>
+   <td style="text-align:right;"> 0.9469306 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AccuracyPValue </td>
+   <td style="text-align:right;"> 0.9999622 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> McnemarPValue </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+  </tr>
+</tbody>
 </table>
