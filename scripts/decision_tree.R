@@ -35,6 +35,7 @@ library(rpart) #decision tree
 library(rpart.plot) #visualize tree
 library(insight)
 library(knitr)
+library(ConfusionTableR)
 ##Data
 
 stroke <- read_csv("raw_data/brain_stroke.csv")
@@ -200,15 +201,35 @@ print_git_confmat <- function(prediction_obj, test_target_col, type, cmat_elemen
   return(kable(cmat[[cmat_element]], format = type))
 }
 
-map(preds, ~print_git_confmat(prediction_obj = .x, 
-                              test_target_col = c_test$stroke,
-                              type = "markdown",
-                              cmat_element = "table"))
-map(preds, ~print_git_confmat(prediction_obj = .x, 
-                              test_target_col = c_test$stroke,
-                              type = "markdown",
-                              cmat_element = "overall"))
 
-t <- confusionMatrix(factor(preds[[1]]), factor(c_test$stroke))
+#produce figure of confusion matrices
+confusion_matrix_fig <- function(prediction_obj, test_target_col, fig_name){
+  df <- cbind(data.frame(class_preds = prediction_obj), test_target_col)
+  bin_cm <- binary_class_cm(df$class_preds, df$`test_target_col`)
+  svg(paste0("figures/", fig_name, "_cm_stats.svg"))
+  binary_visualiseR(train_labels = df$class_preds,
+                    truth_labels = df$`test_target_col`,
+                    class_label1 = "Stroke",
+                    class_label2 = "No Stroke",
+                    custom_title = "Confusion Matrix")
+  dev.off()
+}
+
+map2(preds, names(preds), ~confusion_matrix_fig(.x, 
+                                                c_test$stroke,
+                                                .y))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 

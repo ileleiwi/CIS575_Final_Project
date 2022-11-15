@@ -70,101 +70,14 @@ The default 10-fold cross-validation results are shown below relating the comple
 
 Each tree model was tested on the test dataset and the confusion matrices are displayed below
 ## Unbalanced dataset
-<table>
-<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
-<tr><td>
-|      Reference              |
-|Prediction| stroke| no_stroke|
-|:---------|------:|---------:|
-|stroke    |     19|        73|
-|no_stroke |    166|      3228|
-
-</td><td>
-
-|               |         x|
-|:--------------|---------:|
-|Accuracy       | 0.9314400|
-|Kappa          | 0.1056568|
-|AccuracyLower  | 0.9225402|
-|AccuracyUpper  | 0.9396076|
-|AccuracyNull   | 0.9469306|
-|AccuracyPValue | 0.9999622|
-|McnemarPValue  | 0.0000000|
-
-</td></tr> </table>
+![c_train cp plot](/figures/c_train_cm_stats.svg)
 
 ## Up-sampled dataset
-<table>
-<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
-<tr><td>
-
-| Reference                   |
-|-----------------------------|
-|          | stroke| no_stroke|
-|:---------|------:|---------:|
-|stroke    |     47|       238|
-|no_stroke |    138|      3063|
-
-</td><td>
-
-|               |         x|
-|:--------------|---------:|
-|Accuracy       | 0.8921400|
-|Kappa          | 0.1449696|
-|AccuracyLower  | 0.8813683|
-|AccuracyUpper  | 0.9022489|
-|AccuracyNull   | 0.9469306|
-|AccuracyPValue | 1.0000000|
-|McnemarPValue  | 0.0000003|
-
-</td></tr> </table>
+![c_train cp plot](/figures/c_train_up_cm_stats.svg)
 
 ## Rebalanced with SMOTE dataset
-<table>
-<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
-<tr><td>
-
-|          | stroke| no_stroke|
-|:---------|------:|---------:|
-|stroke    |    113|       683|
-|no_stroke |     72|      2618|
-
-</td><td>
-
-|               |         x|
-|:--------------|---------:|
-|Accuracy       | 0.7834194|
-|Kappa          | 0.1578487|
-|AccuracyLower  | 0.7693673|
-|AccuracyUpper  | 0.7969946|
-|AccuracyNull   | 0.9469306|
-|AccuracyPValue | 1.0000000|
-|McnemarPValue  | 0.0000000|
-
-</td></tr> </table>
-
+![c_train cp plot](/figures/c_train_smote_cm_stats.svg)
 
 ## Down-sampled dataset
-<table>
-<tr><th>Confusion Matrix </th><th>Model Stats</th></tr>
-<tr><td>
-
-|          | stroke| no_stroke|
-|:---------|------:|---------:|
-|stroke    |    153|      1085|
-|no_stroke |     32|      2216|
-
-</td><td>
-
-|               |         x|
-|:--------------|---------:|
-|Accuracy       | 0.6795754|
-|Kappa          | 0.1351812|
-|AccuracyLower  | 0.6637957|
-|AccuracyUpper  | 0.6950535|
-|AccuracyNull   | 0.9469306|
-|AccuracyPValue | 1.0000000|
-|McnemarPValue  | 0.0000000|
-
-</td></tr> </table>
+![c_train cp plot](/figures/c_train_down_cm_stats.svg)
 
