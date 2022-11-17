@@ -91,3 +91,7 @@ A Random Forest model was run using the `train` function from the R package `car
 | ntrees        | 500, 700, 1000|
 | mtry          | 1 - 11        |
 | nodesize      | 1, 5          |
+
+The positive target class was upsampled for each cross validation fold. Below are the cross validation results.
+
+![rf_tuning_plot](/figures/rf_tuning_plot.svg)

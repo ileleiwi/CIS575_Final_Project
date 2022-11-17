@@ -61,7 +61,7 @@ cv_folds <- createFolds(y = rf_train$stroke,
                         k = 10, 
                         returnTrain = TRUE)
 
-trControl <- trainControl(method = "repeatedcv", 
+trControl <- trainControl(method = "cv", 
                           number = 10,
                           search = "grid",
                           classProbs = TRUE,
@@ -117,7 +117,22 @@ names(store_maxnode) <- paste("ntrees:", params$ntrees,
 results_mtry <- resamples(store_maxnode)
 summary(results_mtry)
 
+#make data frame of different models results
+result_df_list <- lapply(store_maxnode, function(x) x$results)
+rep_names <- names(result_df_list)
+result_df_list <- map2(result_df_list, 
+                         rep_names, 
+                         function(x,y) cbind(x, rep(y, nrow(x))))
+combined_results <- do.call("rbind", result_df_list) %>%
+  rename("ntrees_nodesize" = "rep(y, nrow(x))")
 
+svg("figures/rf_tuning_plot.svg", height = 10, width = 10)
+combined_results %>%
+  ggplot(aes(x = mtry, y = ROC, color = ntrees_nodesize)) +
+  geom_point() +
+  geom_line() +
+  theme_classic()
+dev.off()
 
 #Predict 
 # pred <- predict(rf_mtry, stroke[-split_index,])
