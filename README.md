@@ -24,7 +24,7 @@ Through the implementation of various machine learning and predictive modeling t
 
 # Preliminary Data Exploration and Findings
 
-Initial exploration of the Stroke dataset involved creating histograms of each variable to visualize the distributions.
+Initial exploration of the Stroke dataset involved creating histograms of each variable to visualize the distributions. We also checked for the presence of missing values, of which there were none.
 
 ![variable plots](/figures/variable_plots.svg)
 
@@ -52,7 +52,7 @@ A CART classification decision tree splitting with the gini index was implemente
 c_train = no balancing \
 c_train_p = random upsampling of positive class observations \
 c_train_smote = rebalancing using the SMOTE algorithm as implemented in the `DMwR`\
-c_train_down = random downsampling of negative class observations \
+c_train_down = random downsampling of negative class observations
 
 The default 10-fold cross-validation results are shown below relating the complexity parameter of each model to the cross-validated error.
 
@@ -81,3 +81,13 @@ Each tree model was tested on the test dataset and the confusion matrices are di
 ## Down-sampled dataset
 ![c_train cp plot](/figures/c_train_down_cm_stats.svg)
 
+Considering the results from each unpruned decision tree, up-sampling to correct for target class imbalance seems to be the best option. While the SMOTE method had a higher balanced accuracy, the up-sampled model has a better overall accuracy, and importantly, it had the highest specificity. Considering the implications of a false negative when predicting if a patient will have a stroke, the specificity metric must be as high as possible. Moving forward with the Random Forest analysis, we will use upsampling to balance the data.
+
+# Random Forest Classification
+
+A Random Forest model was run using the `train` function from the R package `caret`. A training partition of the original stroke data set was produced containing 30% of the data, and the remaining 70% of the data was reserved for testing. A 10 fold cross validation was performed on the training dataset to find optimal tuning paramaters for number of trees (ntrees), number of variables (mtry), and number of observations in a terminal node (nodesize). The parameters tested are as follows.
+| Param         | Values           
+| ------------- |:-------------:|
+| ntrees        | 500, 700, 1000|
+| mtry          | 1 - 11        |
+| nodesize      | 1, 5          |
