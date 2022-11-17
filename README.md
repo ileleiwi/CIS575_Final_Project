@@ -44,7 +44,7 @@ More summary statistics can be viewed [here](/documents/summary_stats.pdf)
 
 # Description of Data Preparation
 
-Our data analysis plan includes implementing cross-validated decision trees with different strategies to balance the data (no correction, up sampling positive class, down sampling negative class, SMOTE rebalancing) and then use the strategy that provides the best results (most accurate model) to train a bagged random forest model. The results of the random forest model will be used to further inform feature selection for a logistic regression. Finally, all models will be compared and the best one chosen. Prior to logistic regression, numeric variables will be min-max scaled and dummy variables will be created from categorical variable in the data. We will divide the data into a training and testing set where appropriate, each partition containing 30% and 70% of the data respectively.
+Our data analysis plan includes implementing cross-validated decision trees with different strategies to balance the data (no correction, up sampling positive class, down sampling negative class, SMOTE rebalancing) and then use the strategy that provides the best results (most accurate model) to train a bagged random forest model. The results of the random forest model will be used to further inform feature selection for a logistic regression. Finally, all models will be compared and the best one chosen. Prior to logistic regression, numeric variables will be min-max scaled and dummy variables will be created from categorical each variable in the data. We will divide the data into a training and testing set where appropriate, each partition containing 30% and 70% of the data respectively.
 
 # Decision Tree Classification
 A CART classification decision tree splitting with the gini index was implemented using the `rpart` library in R. Various balancing strategies were implemented on the training data to balance the target variable classes.
@@ -81,7 +81,7 @@ Each tree model was tested on the test dataset and the confusion matrices are di
 ## Down-sampled dataset
 ![c_train cp plot](/figures/c_train_down_cm_stats.svg)
 
-Considering the results from each unpruned decision tree, up-sampling to correct for target class imbalance seems to be the best option. While the SMOTE method had a higher balanced accuracy, the up-sampled model has a better overall accuracy, and importantly, it had the highest specificity. Considering the implications of a false negative when predicting if a patient will have a stroke, the specificity metric must be as high as possible. Moving forward with the Random Forest analysis, we will use upsampling to balance the data.
+Considering the results from each unpruned decision tree, up-sampling to correct for target class imbalance seems to be the best option. Of the different rebalancing techniques, upsampling had the highest accuracy and Cohen's Kappa. Furthermore, While the downsampling method had a higher balanced accuracy, upsampling had, by far, the highest specificity. Considering the implications of a false negative when predicting if a patient will have a stroke, the specificity metric must be as high as possible. Moving forward with the Random Forest analysis, we will use upsampling to balance the data.
 
 # Random Forest Classification
 
