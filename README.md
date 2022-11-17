@@ -95,3 +95,5 @@ A Random Forest model was run using the `train` function from the R package `car
 The positive target class was upsampled for each cross validation fold. Below are the cross validation results.
 
 ![rf_tuning_plot](/figures/rf_tuning_plot.svg)
+
+Finally a 10-fold cross validated model using the optimum paramaters of ntrees = 500, nodesize = 1, and mtry = 9 was trained with the training data partition.

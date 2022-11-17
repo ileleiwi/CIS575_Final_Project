@@ -53,8 +53,8 @@ split_index <- createDataPartition(stroke$stroke,
                                           list = FALSE,
                                           times = 1) #divide data into 30% train and 70% test
 
-rf_train <- stroke[split_index,]
-rf_test <- stroke[-split_index,]
+rf_train <- stroke[-split_index,]
+rf_test <- stroke[split_index,]
 
 #run random forest with caret
 cv_folds <- createFolds(y = rf_train$stroke, 
@@ -63,6 +63,7 @@ cv_folds <- createFolds(y = rf_train$stroke,
 
 trControl <- trainControl(method = "cv", 
                           number = 10,
+                          p = 0.7,
                           search = "grid",
                           classProbs = TRUE,
                           savePredictions = "final",
@@ -126,7 +127,7 @@ result_df_list <- map2(result_df_list,
 combined_results <- do.call("rbind", result_df_list) %>%
   rename("ntrees_nodesize" = "rep(y, nrow(x))")
 
-svg("figures/rf_tuning_plot.svg", height = 10, width = 10)
+svg("figures/rf_tuning_plot.svg", height = 5, width = 5)
 combined_results %>%
   ggplot(aes(x = mtry, y = ROC, color = ntrees_nodesize)) +
   geom_point() +
@@ -134,8 +135,38 @@ combined_results %>%
   theme_classic()
 dev.off()
 
+#train tuned model
+tuneGrid <- expand.grid(.mtry = 9)
+
+trControl <- trainControl(method = "cv", 
+                          p = 0.7,
+                          number = 10,
+                          search = "grid",
+                          classProbs = TRUE,
+                          savePredictions = "final",
+                          sampling = "up")
+
+final_model <- train(stroke~.,
+                  data = rf_train,
+                  method = "rf",
+                  metric = "Accuracy",
+                  trControl = trControl,
+                  tuneGrid = tuneGrid,
+                  importance = TRUE,
+                  nodesize = 1,
+                  ntree = 500)
+
+
 #Predict 
-# pred <- predict(rf_mtry, stroke[-split_index,])
-# confusionMatrix(pred, reference = stroke[-split_index,"stroke"])
-# varImp(rf_mtry)
+pred <- predict(store_maxnode[[""]], stroke[-split_index,])
+confusionMatrix(pred, reference = stroke[-split_index,"stroke"])
+
+
+
+#clean up paralel computing
+unregister_dopar <- function() {
+  env <- foreach:::.foreachGlobals
+  rm(list=ls(name=env), pos=env)
+}
+
 

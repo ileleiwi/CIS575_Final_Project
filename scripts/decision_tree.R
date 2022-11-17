@@ -48,10 +48,10 @@ split_index <- caret::createDataPartition(stroke$stroke,
                                    time = 1) #divide data into 30% train and 70% test
 
 c_train <- stroke %>%
-  slice(split_index) 
+  slice(-split_index) 
 
 c_test <- stroke %>%
-  slice(-split_index) %>%
+  slice(split_index) %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
          stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
@@ -85,19 +85,19 @@ resample_up_down <- function(df, target_col, iter=1, up_or_down, lower_val = 1){
 }
 
 
-#oversample stroke = 1, target number to add 1369
+#oversample stroke = 1, target number to add 3116
 c_train_up <- resample_up_down(df = c_train,
                                  target_col = "stroke", 
-                                 iter = 1369, 
+                                 iter = 3116, 
                                  up_or_down = "up", 
                                  lower_val = 1) %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
          stroke = factor(stroke, levels = c("stroke", "no_stroke"))) #modify target variable to be factor
 
-#downsample stroke = 0, target number to reduce to 63
+#downsample stroke = 0, target number to reduce to 185
 c_train_down <- resample_up_down(df = c_train,
                                  target_col = "stroke", 
-                                 iter = 63, 
+                                 iter = 185, 
                                  up_or_down = "down", 
                                  lower_val = 1) %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
@@ -111,7 +111,7 @@ c_train_smote[sapply(c_train_smote, is.character)] <- lapply(c_train_smote[sappl
 c_train_smote$stroke <- factor(c_train_smote$stroke) #transform target col to factor
 c_train_smote <- SMOTE(stroke ~ .,
                        data = c_train_smote,
-                       perc.over = 1100,
+                       perc.over = 1000,
                        perc.under = 100)
 
 c_train_smote <- c_train_smote %>%
