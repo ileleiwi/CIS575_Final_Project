@@ -29,9 +29,8 @@ setwd(paste0("/Users/ikaialeleiwi/Desktop/School/Fall_2022/CIS575/",
 ##Libraries
 library(tidyverse)
 library(caret) #createDataPartition
-#library(DMwR) #SMOTE funciton
 library(doParallel)
-
+library(ConfusionTableR)
 ##Seed
 set.seed(123)
 
@@ -169,7 +168,15 @@ pred <- predict(final_model, rf_test)
 confusionMatrix(pred, reference = rf_test$stroke)
 
 
-
+#produce figure of confusion matrix
+rf_cm <- binary_class_cm(pred, rf_test$stroke)
+svg("figures/final_rf_confusion_matrix.svg", )
+binary_visualiseR(train_labels = pred,
+                  truth_labels = rf_test$stroke,
+                  class_label1 = "Stroke",
+                  class_label2 = "No Stroke",
+                  custom_title = "Final Random Forest Confusion Matrix")
+dev.off()
 
 
 
