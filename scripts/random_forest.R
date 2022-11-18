@@ -111,7 +111,7 @@ for(i in 1:nrow(params)){
 close(pb)
 stopCluster(cl)
 
-#clean up paralel computing
+#clean up parallel computing
 unregister_dopar <- function() {
   env <- foreach:::.foreachGlobals
   rm(list=ls(name=env), pos=env)
@@ -132,6 +132,17 @@ result_df_list <- map2(result_df_list,
                          function(x,y) cbind(x, rep(y, nrow(x))))
 combined_results <- do.call("rbind", result_df_list) %>%
   rename("ntrees_nodesize" = "rep(y, nrow(x))")
+
+maxroc <- combined_results %>%
+  group_by(ntrees_nodesize) %>%
+  summarise(maxroc = max(ROC))
+
+minmtry_maxroc <- combined_results %>%
+  filter(ROC %in% maxroc$maxroc &
+           ntrees_nodesize %in% maxroc$ntrees_nodesize) %>%
+  select(mtry, ROC)
+
+knitr::kable(minmtry_maxroc)
 
 svg("figures/rf_tuning_plot.svg", height = 5, width = 5)
 combined_results %>%
