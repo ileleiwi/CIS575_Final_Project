@@ -140,7 +140,8 @@ maxroc <- combined_results %>%
 minmtry_maxroc <- combined_results %>%
   filter(ROC %in% maxroc$maxroc &
            ntrees_nodesize %in% maxroc$ntrees_nodesize) %>%
-  select(mtry, ROC)
+  select(mtry, ROC) %>%
+  arrange(desc(ROC))
 
 knitr::kable(minmtry_maxroc)
 
@@ -153,7 +154,7 @@ combined_results %>%
 dev.off()
 
 #train tuned model
-tuneGrid <- expand.grid(.mtry = 9)
+tuneGrid <- expand.grid(.mtry = 6)
 
 trControl <- trainControl(method = "cv", 
                           p = 0.7,
@@ -171,7 +172,7 @@ final_model <- train(stroke~.,
                   tuneGrid = tuneGrid,
                   importance = TRUE,
                   nodesize = 1,
-                  ntree = 500)
+                  ntree = 1000)
 
 
 #Predict 

@@ -106,6 +106,6 @@ The positive target class was upsampled for each cross validation fold and sub-t
 |ntrees: 700 nodesize: 5.5  |    5| 0.8143032|
 |ntrees: 500 nodesize: 5.5  |    5| 0.8141993|
 
-Finally a 10-fold cross validated model using the optimum paramaters of ntrees = 500, nodesize = 1, and mtry = 9 was trained with the training data partition and tested against the 30% hold out data. Below is the resulting confusion matrix.
+Finally a 10-fold cross validated model using the optimum paramaters of ntrees = 1000, nodesize = 1, and mtry = 6 was trained with the training data partition and tested against the 30% hold out data. Below is the resulting confusion matrix.
 
 ![final_rf confusion matrix](/figures/final_rf_confusion_matrix.svg)
