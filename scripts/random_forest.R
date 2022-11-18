@@ -112,6 +112,13 @@ for(i in 1:nrow(params)){
 close(pb)
 stopCluster(cl)
 
+#clean up paralel computing
+unregister_dopar <- function() {
+  env <- foreach:::.foreachGlobals
+  rm(list=ls(name=env), pos=env)
+}
+unregister_dopar()
+
 names(store_maxnode) <- paste("ntrees:", params$ntrees,
                               "nodesize:", params$nodesize)
 
@@ -158,15 +165,11 @@ final_model <- train(stroke~.,
 
 
 #Predict 
-pred <- predict(store_maxnode[[""]], stroke[-split_index,])
-confusionMatrix(pred, reference = stroke[-split_index,"stroke"])
+pred <- predict(final_model, rf_test)
+confusionMatrix(pred, reference = rf_test$stroke)
 
 
 
-#clean up paralel computing
-unregister_dopar <- function() {
-  env <- foreach:::.foreachGlobals
-  rm(list=ls(name=env), pos=env)
-}
+
 
 

@@ -85,14 +85,14 @@ Considering the results from each unpruned decision tree, up-sampling to correct
 
 # Random Forest Classification
 
-A Random Forest model was run using the `train` function from the R package `caret`. A training partition of the original stroke data set was produced containing 30% of the data, and the remaining 70% of the data was reserved for testing. A 10 fold cross validation was performed on the training dataset to find optimal tuning paramaters for number of trees (ntrees), number of variables (mtry), and number of observations in a terminal node (nodesize). The parameters tested are as follows.
+A Random Forest model was run using the `train` function from the R package `caret`. A training partition of the original stroke data set was produced containing 70% of the data, and the remaining 30% of the data was reserved for testing. A 10 fold cross validation was performed on the training dataset to find optimal tuning parameters for number of trees (ntrees), number of variables (mtry), and number of observations in a terminal node (nodesize). The parameters tested are as follows.
 | Param         | Values           
 | ------------- |:-------------:|
 | ntrees        | 500, 700, 1000|
 | mtry          | 1 - 11        |
 | nodesize      | 1, 5          |
 
-The positive target class was upsampled for each cross validation fold. Below are the cross validation results.
+The positive target class was upsampled for each cross validation fold and sub-training sets contained 70% of the training data. Below are the cross validation results.
 
 ![rf_tuning_plot](/figures/rf_tuning_plot.svg)
 
