@@ -31,6 +31,8 @@ library(tidyverse)
 library(caret) #createDataPartition
 library(doParallel)
 library(ConfusionTableR)
+library(pROC)
+library(DMwR) #SMOTE funciton
 ##Seed
 set.seed(123)
 
@@ -174,13 +176,65 @@ final_model <- train(stroke~.,
                   nodesize = 1,
                   ntree = 1000)
 
+#function to fit models with different samplings
+fit_models_sampling <- function(samp){
+  
+  
+train(stroke~.,
+     data = rf_train,
+     method = "rf",
+     metric = "Accuracy",
+     trControl = trainControl(method = "cv", 
+                              p = 0.7,
+                              number = 10,
+                              search = "grid",
+                              classProbs = TRUE,
+                              savePredictions = "final",
+                              sampling = samp),
+     tuneGrid = expand.grid(.mtry = 6),
+     importance = TRUE,
+     nodesize = 1,
+     ntree = 1000)
+  
+}
+
+sampling_models <- map(c("up", "down", "smote"), fit_models_sampling)
+names(sampling_models) <- c("up", "down", "smote")
+
+
 
 #Predict 
-pred <- predict(final_model, rf_test)
+pred_list <- map(sampling_models, ~predict(.x, rf_test, type = "prob"))
+names(pred_list) <- c("up", "down", "smote")
+
+#ROC
+roc_list <- map(pred_list, ~roc(rf_test$stroke, .x[,"stroke"]))
+names(roc_list) <- c("up", "down", "smote")
+
+#AUC
+auc_data <- roc_list %>%
+  map(~tibble(AUC = .x$auc)) %>%
+  bind_rows(.id = "name") 
+
+#lables for plot
+auc_data_labels <- auc_data %>%
+  mutate(label_long = paste0(name, ", AUC = ", paste(round(AUC,3))),
+         label_AUC = paste0("AUC = ", paste(round(AUC, 3))))
+
+#AUC plot
+svg("figures/final_rf_auc.svg")
+ggroc(roc_list) +
+  scale_color_discrete(labels = auc_data_labels$label_long) +
+  theme_classic() +
+  labs(color = "Random Forest Re-sampling Type")
+dev.off()
+
+#best model upsampled
+pred <- predict(sampling_models[["up"]], rf_test)
 confusionMatrix(pred, reference = rf_test$stroke)
 
 
-#produce figure of confusion matrix
+#produce figure of confusion matrix for best model (upsampled)
 rf_cm <- binary_class_cm(pred, rf_test$stroke)
 svg("figures/final_rf_confusion_matrix.svg", )
 binary_visualiseR(train_labels = pred,

@@ -106,6 +106,10 @@ The positive target class was upsampled for each cross validation fold and sub-t
 |ntrees: 700 nodesize: 5.5  |    5| 0.8143032|
 |ntrees: 500 nodesize: 5.5  |    5| 0.8141993|
 
-Finally a 10-fold cross validated model using the optimum paramaters of ntrees = 1000, nodesize = 1, and mtry = 6 was trained with the training data partition and tested against the 30% hold out data. Below is the resulting confusion matrix.
+Next, different resampling techniques were tested (upsampling, downsampling, and SMOTE). The optimal parameters were used as determined above and the best resampling technique was used for the final model as determined by examining each model's receiver operating curve and choosing the highest area under the curve (below).
+
+![combined ROC sampling types](/figures/final_rf_auc.svg)
+
+Finally, an upsampled 10-fold cross validated model using the optimal parameters of ntrees = 1000, nodesize = 1, and mtry = 6 was trained with the training data partition and tested against the 30% hold out data. Below is the resulting confusion matrix.
 
 ![final_rf confusion matrix](/figures/final_rf_confusion_matrix.svg)
