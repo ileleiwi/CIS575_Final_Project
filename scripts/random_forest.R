@@ -52,7 +52,7 @@ set.seed(123)
 split_index <- createDataPartition(stroke$stroke,
                                           p = .3, 
                                           list = FALSE,
-                                          times = 1) #divide data into 30% train and 70% test
+                                          times = 1) #divide data into 30% test and 70% train
 
 rf_train <- stroke[-split_index,]
 rf_test <- stroke[split_index,]

@@ -113,3 +113,13 @@ Next, different resampling techniques were tested (upsampling, downsampling, and
 Finally, an upsampled 10-fold cross validated model using the optimal parameters of ntrees = 1000, nodesize = 1, and mtry = 6 was trained with the training data partition and tested against the 30% hold out data. Below is the resulting confusion matrix.
 
 ![final_rf confusion matrix](/figures/final_rf_confusion_matrix.svg)
+
+# Logistic Regression
+
+Next, we ran a logistic regression model. Prior to training the model, variables were considered for transformation and scaling. Categorical variables with only 2 factor levels (gender, ever_married, Residence_type) were converted from character vectors to numeric factors with values 1 and 0. All other categorical variables (work_type and smoking_status) were transformed into dummy variables and the reference classes were chosen as "Private" for work_type and "Unknown" for smoking_status. All data was z-score transformed using the `scale` function in base R with default values. Prior to any transformations the data was split into training and test sets, containing 70% of the observations and 30% respectively. Each dataset was treated the same preprocessing. Next, recursive feature elimination was performed to choose the best number of variables to retain in the model. This was repeated 10x and the best model was retained each time as determined by the largest AUC. The ROC curves for the winning models can be seen below.
+
+![roc curves](/figures/log_reg_AUC.svg)
+
+Next, we considered the number of variables retained for each of the winning models taking into account AUC.
+
+![important vars](/figures/log_reg_impvars.svg)

@@ -45,7 +45,7 @@ set.seed(123)
 split_index <- caret::createDataPartition(stroke$stroke,
                                    p = .3, 
                                    list = FALSE,
-                                   time = 1) #divide data into 30% train and 70% test
+                                   time = 1) #divide data into 30% test and 70% train
 
 c_train <- stroke %>%
   slice(-split_index) 
