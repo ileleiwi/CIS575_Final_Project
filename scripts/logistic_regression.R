@@ -33,7 +33,6 @@ library(fastDummies) #dummy variables
 library(ConfusionTableR)
 library(pROC) 
 
-
 ##Seed
 set.seed(123)
 
@@ -303,7 +302,7 @@ colnames(best_stats) <- names(best_stats_list)
 
 
 best_stats_df <- best_stats %>%
-  mutate(metric = names(best_stats_list$resample_9.1)) %>%
+  mutate(metric = names(best_stats_list[[1]])) %>%
   pivot_longer(cols = -metric,
                names_to = "id",
                values_to = "value")
@@ -312,6 +311,8 @@ best_stats_df <- best_stats %>%
 
 auc_acc_sen_spe <- best_stats_df %>%
   filter(metric != "Important_vars")
+
+
 #roc list
 roc_list <- map(mod_list_10_best, ~pluck(.x, "roc"))
 
@@ -436,6 +437,11 @@ impvars_df <- map(mod_list$impvars, fill_list_function)  %>%
   
 #run best model
 model <- glm(stroke ~ ., lg_train_dummy, family = binomial(link = "logit")) 
+
+t<- varimp.logistic(model)
+t0 <- varImp(model) %>%
+  arrange(desc(Overall))
+
 pred <- cbind(lg_test_dummy,
               predict(model, newdata = lg_test_dummy, type = "response"))
 colnames(pred) <- c(colnames(lg_test_dummy),"predicted_prob")
