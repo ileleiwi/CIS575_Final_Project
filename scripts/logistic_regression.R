@@ -135,7 +135,7 @@ lg_test_dummy <-pre_process_funct(lg_test)
 
 
 ##functions for recursive feature elimination and picking best model
-rfe_funct <- function(df, iter, p_train = 0.7 , pred_prob_threshold = 0.75, seed = 123){
+rfe_funct <- function(df, iter, p_train = 0.7 , pred_prob_threshold = 0.5, seed = 123){
   
   #df = training data set
   #iter = number of resampling iterations
