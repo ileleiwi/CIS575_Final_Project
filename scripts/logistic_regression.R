@@ -361,7 +361,7 @@ impvars_df %>%
                      labels = as.character(seq(1:13))) +
   geom_label(x = 2.5, y = 11.5, label = "Bar Labels = AUC") +
   labs(y = "Number of Variables in Model",
-       x = "Cross Validation Iteration") +
+       x = "Resample Iteration") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 dev.off()
