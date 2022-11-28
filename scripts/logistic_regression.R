@@ -48,7 +48,7 @@ is.na(stroke) %>% sum()
 
 stroke <- stroke %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
-         stroke = factor(stroke, levels = c("stroke", "no_stroke"))) %>% #modify target variable to be factor
+         stroke = factor(stroke, levels = c("no_stroke", "stroke"))) %>% #modify target variable to be factor, second factor level is default "success
   select(stroke, everything()) #move stroke to column 1
 stroke[sapply(stroke, is.character)] <- lapply(stroke[sapply(stroke, is.character)], 
                                                as.factor) #transform chr cols to factors
@@ -190,7 +190,7 @@ rfe_funct <- function(df, iter, p_train = 0.7 , pred_prob_threshold = 0.5, seed 
         mutate(predictions = ifelse(predicted_prob >= pred_prob_threshold, 
                                     "stroke", "no_stroke")) %>%
         pull(predictions) %>%
-        factor(., levels = c("stroke","no_stroke"))
+        factor(., levels = c("no_stroke","stroke"))
       
       #produce confusion matrix
       cm <- confusionMatrix(predictions, reference = TEST$stroke)
@@ -291,7 +291,7 @@ pull_stats <- function(l){
 seeds <- sample(1:100, 10, replace = FALSE)
 mod_list_10 <- map(seeds, ~rfe_funct(lg_train_dummy, iter = 14, seed = .x))
 
-#best F1 iteration for each fold from 10x cross val
+#best AUC iteration for each fold from 10x cross val
 best_replication <- find_stat(mod_list_10, s = "AUC")
 mod_list_10_best <- map2(mod_list_10, best_replication, ~filter_list(.x, .y))
 names(mod_list_10_best) <- paste(best_replication, seq(1:10), sep = ".")
@@ -477,7 +477,10 @@ rt <- roc(lg_test_dummy$stroke, predict(mod_list_10_best$resample_13.10$models, 
 confusionMatrix(predicts, 
                       reference = lg_test_dummy$stroke)
 
+summary(mod_list_10_best$resample_13.10$models)
 
+numerator_age <- exp(3.81931+-1.41890)
+numerator_age <- exp(3.81931+-1.41890)
 
 ta <- as.numeric(auc(rt))
 names(ta) <- "AUC"
