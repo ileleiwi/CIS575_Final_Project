@@ -370,133 +370,116 @@ impvars_df %>%
 dev.off()
 
 
-#
+#try updating prior probs
+pred_best <- predict(mod_list_10_best$resample_13.10$models, lg_test_dummy, type = "response")
 
+hist(pred_best)
 
+#log odds of model predictions
+lo.preds <- logit(pred_best)
+#original B0
+model.prior.lo <- mod_list_10_best$resample_13.10$models$coefficients[1]
+#probability of having a stroke from training data
+table(lg_train_dummy$stroke)[1]
+prob_stroke <- table(lg_train_dummy$stroke)[1]/table(lg_train_dummy$stroke)[2]
+#corrected B0
+correct.lo <- logit(prob_stroke) #log(x/(1-x))
+#updated predictions
+updated.lo.preds <- lo.preds + (correct.lo - model.prior.lo)
+#log odds converted to probabilities
+updated.preds <- logistic(updated.lo.preds)
 
+hist(updated.preds)
 
+#add updated predictions to dataframe
+pred_best_df <- cbind(lg_test_dummy, updated.preds)
+colnames(pred_best_df) <- c(colnames(lg_test_dummy),"predicted_prob")
 
-
-
-
-
-#stats data frame
-stats_df <- data.frame(matrix(unlist(mod_list_10$stats), 
-                              ncol = length(mod_list_10$stats)))
-colnames(stats_df) <- names(mod_list_10$stats)
-stats_df <- stats_df %>%
-  mutate(statistic = names(mod_list_10$stats$resample_1_stats)) %>%
-  select(statistic, everything()) %>%
-  pivot_longer(cols = -statistic,
-               values_to = "value",
-               names_to = "iter") %>%
-  mutate(iter = str_extract(iter, "(\\d+)"),
-         number_of_variables = case_when(iter == 1 ~ 14,
-                                         iter == 2 ~ 13,
-                                         iter == 3 ~ 12,
-                                         iter == 4 ~ 11,
-                                         iter == 5 ~ 10,
-                                         iter == 6 ~ 9,
-                                         iter == 7 ~ 8,
-                                         iter == 8 ~ 7,
-                                         iter == 9 ~ 6,
-                                         iter == 10 ~ 5,
-                                         iter == 11 ~ 4,
-                                         iter == 12 ~ 3,
-                                         iter == 13 ~ 2,
-                                         iter == 14 ~ 1)) 
-
-#plot stats
-data_max <- stats_df %>%
-  group_by(statistic) %>%
-  summarise(max_val = max(value))
-
-data_max_varnum <- stats_df %>%
-  filter(value %in% data_max$max_val) %>%
-  group_by(statistic, value) %>%
-  summarise(number_of_variables = paste(number_of_variables, collapse = ", "))
-
-svg("figures/log_reg_statistics.svg")
-stats_df %>%
-  ggplot(aes(x = number_of_variables, y = value, group = statistic)) +
-  geom_point(aes(color = statistic)) +
-  geom_line(aes(color = statistic)) +
-  scale_x_continuous(breaks = seq(1:14),
-                     labels = as.character(seq(1:14))) +
-  theme_classic()
-dev.off()
-
-#important variable dataframe
-fill_list_function <- function(x){
-  
-  l <- nrow(x)
-  out <- x %>%
-    rownames_to_column(var = "vars")
-  
-  if(l < 14){
-    add_num <- 14-l
-    add_df <- data.frame(vars = letters[1:add_num],
-                         Overall = rep(NA, add_num))
-    return(rbind(out, add_df))
-  }else{
-    return(out)
-  }
-}
- 
-impvars_df <- map(mod_list$impvars, fill_list_function)  %>%
-  bind_rows(., .id = "column_label")
- 
-  
-  
-#run best model
-model <- glm(stroke ~ ., lg_train_dummy, family = binomial(link = "logit")) 
-
-t<- varimp.logistic(model)
-t0 <- varImp(model) %>%
-  arrange(desc(Overall))
-
-pred <- cbind(lg_test_dummy,
-              predict(model, newdata = lg_test_dummy, type = "response"))
-colnames(pred) <- c(colnames(lg_test_dummy),"predicted_prob")
-predicts <- pred %>%
-  mutate(predictions = ifelse(predicted_prob >= 0.75, 
+#get predictions as factor
+predictions_best <- pred_best_df %>%
+  mutate(predictions = ifelse(predicted_prob >= .5, 
                               "stroke", "no_stroke")) %>%
   pull(predictions) %>%
   factor(., levels = c("stroke","no_stroke"))
 
-rt <- roc(lg_test_dummy$stroke, predict(model, newdata = lg_test_dummy, type = "response"))
+#produce confusion matrix
+confusionMatrix(predictions_best, reference = lg_test_dummy$stroke)
+
+
+#try pca
+no_target_train <- lg_train_dummy[,-1]
+no_target_test <- lg_test_dummy[,-1]
+
+pca_train <- prcomp(no_target_train, scale. = FALSE) #data is already scaled
+pca_test <- prcomp(no_target_test, scale. = FALSE)
+
+pca_train_df <- cbind(lg_train_dummy[,1], pca_train$x) %>% 
+  as.data.frame() %>%
+  rename("stroke" = "V1")
+pca_test_df <- cbind(lg_test_dummy[,1], pca_test$x) %>% 
+  as.data.frame() %>%
+  rename("stroke" = "V1")
+
+#plot principle components to see which explain most variance
+pca.var <- pca_train$sdev^2
+pve <- pca.var/sum(pca.var)
+plot(pve, xlab = "Principal component",
+     ylab = "Proportion of variation explained",
+     ylim = c(0,1),
+     type = "b")
+
+plot(cumsum(pve), xlab = "Principal component",
+     ylab = "Accumulative Prop. of variation explained",
+     ylim = c(0,1),
+     type = "b")
+
+#based on above plot we will choos PC1-PC11 which account from ~ 90% of variance in data
+pca_train_df <- pca_train_df %>%
+  select(stroke, PC1:PC11) %>%
+  mutate(stroke = factor(stroke))
+
+pca_test_df <- pca_test_df %>%
+  select(stroke, PC1:PC11) %>%
+  mutate(stroke = factor(stroke))
+
+#train model
+model_pca <- glm(stroke ~ ., pca_train_df, family = binomial(link = "logit")) 
+pred_pca <- cbind(pca_test_df, predict(model_pca, newdata = pca_test_df, type = "response"))
+colnames(pred_pca) <- c(colnames(pca_test_df),"predicted_prob")
+#get predictions as factor
+predictions_pca <- pred_pca %>%
+  mutate(predictions = ifelse(predicted_prob >= 0.5, 
+                              "stroke", "no_stroke")) %>%
+  pull(predictions) %>%
+  factor(., levels = c("stroke","no_stroke"))
+
+pca_test_df_factor <- pca_test_df %>%
+  mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
+         stroke = factor(stroke, levels = levels(predictions_pca)))
+
+#produce confusion matrix
+confusionMatrix(predictions_pca, reference = pca_test_df_factor$stroke)
+
+
+  
+#run best model
+
+pred <- cbind(lg_test_dummy,
+              predict(mod_list_10_best$resample_13.10$models, newdata = lg_test_dummy, type = "response"))
+colnames(pred) <- c(colnames(lg_test_dummy),"predicted_prob")
+predicts <- pred %>%
+  mutate(predictions = ifelse(predicted_prob >= 0.5 , 
+                              "stroke", "no_stroke")) %>%
+  pull(predictions) %>%
+  factor(., levels = c("stroke","no_stroke"))
+
+rt <- roc(lg_test_dummy$stroke, predict(mod_list_10_best$resample_13.10$models, newdata = lg_test_dummy, type = "response"))
+confusionMatrix(predicts, 
+                      reference = lg_test_dummy$stroke)
+
+
 
 ta <- as.numeric(auc(rt))
 names(ta) <- "AUC"
 ggroc(rt)
-#train model
-log.glmRFE <- lrFuncs
-log.glmRFE$summary <- twoClassSummary
 
-ctrl <- rfeControl(functions = lrFuncs,
-                   method = "cv",
-                   number = 10,
-                   verbose = FALSE,
-                   rerank = FALSE)
-
-lr_rfe <- rfe(stroke ~., 
-              x = lg_train_final,
-              y = lg_train$stroke,
-              sizes = c(1:10),
-              rfeControl = ctrl,
-              metric = "Accuracy")
-
-logit.CV <- train(x= pP_dV_train , y= lg_train$stroke, 
-                  method = 'glmnet',
-                  trControl = trControl,
-                  family = 'binomial' )
-
-cors <- findCorrelation(cor(final_train), cutoff = 0.90)
-if (length(cors) != 0)
-  x <- final_train[,-cors]
-lr_rfe <- rfe(stroke ~., 
-              x = x,
-              y = lg_train$stroke,
-              sizes = c(1:11),
-              rfeControl = ctrl,
-              metric = "Accuracy")
