@@ -32,6 +32,8 @@ library(caret) #createDataPartition
 library(fastDummies) #dummy variables
 library(ConfusionTableR)
 library(pROC) 
+library(rethinking) #pior prob adjustment
+map <- purrr::map
 
 ##Seed
 set.seed(123)
@@ -80,7 +82,7 @@ keep_cols <- lg_train %>%
   unlist()
 
 #look at counts per factor level and check diff factors to set which one we will use as reference
-map(lg_train[,keep_cols], table)
+purrr::map(lg_train[,keep_cols], table)
 
 #make dummy variable dataframe
 dummy_df <- lg_train[,keep_cols] %>%
@@ -224,7 +226,7 @@ rfe_funct <- function(df, iter, p_train = 0.7 , pred_prob_threshold = 0.5, seed 
 } #end of function
 
 #find most accurate iter
-find_stat <- function(l, s = "Accuracy"){
+find_stat <- function(l, s = "F1"){
   
   best_vec <-c()
   #find best instance in run based on statistic we wish to consider
@@ -250,7 +252,7 @@ find_stat <- function(l, s = "Accuracy"){
   return(best_vec)
 }
 
-#filter list to most accurate
+#filter list to best F1
 filter_list <- function(l, chr){
 
   s_l <- pluck(l$stats, paste(chr, "stats", sep = "_"))
@@ -268,13 +270,13 @@ filter_list <- function(l, chr){
 
 #pull stats from each iteration
 pull_stats <- function(l){
-  Accuracy <- l$stats["Accuracy"]
+  F1 <- l$stats["F1"]
   Sensitivity <- l$stats["Sensitivity"]
   Specificity <- l$stats["Specificity"]
   AUC <- l$stats["AUC"]
   Important_vars <- rownames(l$impvars) 
   
-  out_list <- list(Accuracy = unlist(Accuracy),
+  out_list <- list(F1 = unlist(F1),
                    Sensitivity = unlist(Sensitivity),
                    Specificity = unlist(Specificity),
                    AUC = AUC,
@@ -289,7 +291,7 @@ pull_stats <- function(l){
 seeds <- sample(1:100, 10, replace = FALSE)
 mod_list_10 <- map(seeds, ~rfe_funct(lg_train_dummy, iter = 14, seed = .x))
 
-#most accurate iteration for each fold from 10x cross val
+#best F1 iteration for each fold from 10x cross val
 best_replication <- find_stat(mod_list_10, s = "AUC")
 mod_list_10_best <- map2(mod_list_10, best_replication, ~filter_list(.x, .y))
 names(mod_list_10_best) <- paste(best_replication, seq(1:10), sep = ".")
@@ -319,8 +321,9 @@ roc_list <- map(mod_list_10_best, ~pluck(.x, "roc"))
 #auc table
 #AUC
 auc_data <- roc_list %>%
-  map(~tibble(AUC = .x$auc)) %>%
+  map(~tibble(AUC = as.numeric(.x$auc))) %>%
   bind_rows(.id = "name") 
+
 
 #lables for plot
 auc_data_labels <- auc_data %>%
@@ -367,12 +370,22 @@ impvars_df %>%
 dev.off()
 
 
+#
+
+
+
+
+
+
+
+
+
 #stats data frame
-stats_df <- data.frame(matrix(unlist(mod_list$stats), 
-                              ncol = length(mod_list$stats)))
-colnames(stats_df) <- names(mod_list$stats)
+stats_df <- data.frame(matrix(unlist(mod_list_10$stats), 
+                              ncol = length(mod_list_10$stats)))
+colnames(stats_df) <- names(mod_list_10$stats)
 stats_df <- stats_df %>%
-  mutate(statistic = names(mod_list$stats$resample_1_stats)) %>%
+  mutate(statistic = names(mod_list_10$stats$resample_1_stats)) %>%
   select(statistic, everything()) %>%
   pivot_longer(cols = -statistic,
                values_to = "value",
