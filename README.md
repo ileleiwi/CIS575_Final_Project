@@ -124,7 +124,10 @@ Next, we considered the number of variables retained for each of the winning mod
 
 ![important vars](/figures/log_reg_impvars.svg)
 
-The above plot indicates that the model with the highest AUC (0.872) was resample_13.10 with included the variables age and avg_glucose_level. The model  is as follows:
+The above plot indicates that the model with the highest AUC (0.872) was resample_14.5 which retained only the predictor age. The F1 score was identical between this model and the model with the next highest AUC, so resample_14.5 was chosen as the best model. The model  is as follows:
 
 ![winning model](/figures/winning_model.jpg)
 
+If we exponentiate the age coefficient (exp(1.5527) = 4.724208), while considering our preprocessing step (base 10 log transformation of variable age), we can interpret the model to indicate that the odds ratio of having a stroke associated with a 10-fold increase in age is 4.72. In other words, with every 10-fold increase in age the odds of having a stroke are 4.72 times higher.
+
+We considered multiple methods for handling the effect of the unbalanced target variable bias on model predictions, including dimensional reduction (PCA) and updating predictions with a calculated prior probability (see [logistic_regression.R(scripts/logistic_regression.R)])

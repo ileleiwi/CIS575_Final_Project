@@ -371,17 +371,17 @@ dev.off()
 
 
 #try updating prior probs
-pred_best <- predict(mod_list_10_best$resample_13.10$models, lg_test_dummy, type = "response")
+pred_best <- predict(mod_list_10_best$resample_14.5$models, lg_test_dummy, type = "response")
 
 hist(pred_best)
 
 #log odds of model predictions
 lo.preds <- logit(pred_best)
 #original B0
-model.prior.lo <- mod_list_10_best$resample_13.10$models$coefficients[1]
+model.prior.lo <- mod_list_10_best$resample_14.5$models$coefficients[1]
 #probability of having a stroke from training data
-table(lg_train_dummy$stroke)[1]
-prob_stroke <- table(lg_train_dummy$stroke)[1]/table(lg_train_dummy$stroke)[2]
+table(lg_train_dummy$stroke)[2]
+prob_stroke <- table(lg_train_dummy$stroke)[2]/table(lg_train_dummy$stroke)[1]
 #corrected B0
 correct.lo <- logit(prob_stroke) #log(x/(1-x))
 #updated predictions
@@ -397,10 +397,10 @@ colnames(pred_best_df) <- c(colnames(lg_test_dummy),"predicted_prob")
 
 #get predictions as factor
 predictions_best <- pred_best_df %>%
-  mutate(predictions = ifelse(predicted_prob >= .5, 
+  mutate(predictions = ifelse(predicted_prob >= prob_stroke, 
                               "stroke", "no_stroke")) %>%
   pull(predictions) %>%
-  factor(., levels = c("stroke","no_stroke"))
+  factor(., levels = c("no_stroke","stroke"))
 
 #produce confusion matrix
 confusionMatrix(predictions_best, reference = lg_test_dummy$stroke)
@@ -448,10 +448,10 @@ pred_pca <- cbind(pca_test_df, predict(model_pca, newdata = pca_test_df, type = 
 colnames(pred_pca) <- c(colnames(pca_test_df),"predicted_prob")
 #get predictions as factor
 predictions_pca <- pred_pca %>%
-  mutate(predictions = ifelse(predicted_prob >= 0.5, 
+  mutate(predictions = ifelse(predicted_prob >= prob_stroke, 
                               "stroke", "no_stroke")) %>%
   pull(predictions) %>%
-  factor(., levels = c("stroke","no_stroke"))
+  factor(., levels = c("no_stroke", "stroke"))
 
 pca_test_df_factor <- pca_test_df %>%
   mutate(stroke = ifelse(stroke == 1, "stroke", "no_stroke"),
@@ -463,24 +463,37 @@ confusionMatrix(predictions_pca, reference = pca_test_df_factor$stroke)
 
   
 #run best model
-
+prob_stroke <- table(lg_train_dummy$stroke)[2]/table(lg_train_dummy$stroke)[1]
 pred <- cbind(lg_test_dummy,
-              predict(mod_list_10_best$resample_13.10$models, newdata = lg_test_dummy, type = "response"))
+              predict(mod_list_10_best$resample_14.5$models, newdata = lg_test_dummy, type = "response"))
 colnames(pred) <- c(colnames(lg_test_dummy),"predicted_prob")
 predicts <- pred %>%
-  mutate(predictions = ifelse(predicted_prob >= 0.5 , 
+  mutate(predictions = ifelse(predicted_prob >= prob_stroke , 
                               "stroke", "no_stroke")) %>%
   pull(predictions) %>%
-  factor(., levels = c("stroke","no_stroke"))
+  factor(., levels = c("no_stroke","stroke"))
 
-rt <- roc(lg_test_dummy$stroke, predict(mod_list_10_best$resample_13.10$models, newdata = lg_test_dummy, type = "response"))
+rt <- roc(lg_test_dummy$stroke, predict(mod_list_10_best$resample_14.5$models, newdata = lg_test_dummy, type = "response"))
+
+
 confusionMatrix(predicts, 
                       reference = lg_test_dummy$stroke)
 
-summary(mod_list_10_best$resample_13.10$models)
+svg("figures/final_regression_confusion_matrix.svg", )
+binary_visualiseR(train_labels = predicts,
+                  truth_labels = lg_test_dummy$stroke,
+                  class_label1 = "No Stroke",
+                  class_label2 = "Stroke",
+                  custom_title = "Final Logistic Regression Model Confusion Matrix")
+dev.off()
 
-numerator_age <- exp(3.81931+-1.41890)
-numerator_age <- exp(3.81931+-1.41890)
+
+summary(mod_list_10_best$resample_14.5$models)
+
+numerator_age <- exp(-3.81931+1.5527)
+denominator <- exp(-3.81931)
+logodds <- numerator_age/denominator
+
 
 ta <- as.numeric(auc(rt))
 names(ta) <- "AUC"
