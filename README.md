@@ -81,7 +81,11 @@ Each tree model was tested on the test dataset and the confusion matrices are di
 ## Down-sampled dataset
 ![c_train cp plot](/figures/c_train_down_cm_stats.svg)
 
-Considering the results from each unpruned decision tree, up-sampling to correct for target class imbalance seems to be the best option. Of the different rebalancing techniques, upsampling had the highest accuracy and Cohen's Kappa. Furthermore, While the downsampling method had a higher balanced accuracy, upsampling had, by far, the highest specificity. Considering the implications of a false negative when predicting if a patient will have a stroke, the specificity metric must be as high as possible. Moving forward with the Random Forest analysis, we will use upsampling to balance the data.
+Considering the results from each unpruned decision tree, upsampling to correct for target class imbalance seems to be the best option. Of the different rebalancing techniques, upsampling had the highest accuracy and Cohen's Kappa. Furthermore, While the downsampling method had a higher balanced accuracy, upsampling had, by far, the highest specificity. Considering the implications of a false negative when predicting if a patient will have a stroke, the specificity metric must be as high as possible. Moving forward with the Random Forest analysis, we will use upsampling to balance the data.
+
+To produce a more refined decision tree model for future comparison with other modeling methods we pruned the upsampled decision tree at 129 splits based off of the upsampled model's cp plot. The tree optimization resulted in a more accurate model (shown below).
+
+![pruned up sampled tree](/figures/upsampled_decision_tree_pruned_cm.svg)
 
 # Random Forest Classification
 

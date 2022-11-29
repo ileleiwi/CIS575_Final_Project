@@ -182,8 +182,11 @@ names(models)
 plotcp(models[[1]])
 plotcp(models[[2]])
 plotcp(models[[3]])
-
 plotcp(models[[4]])
+
+printcp(models[[2]]) %>%
+  as.data.frame() %>%
+  arrange(xerror, nsplit)
 
 
 map(models, ~print(.x$variable.importance))
@@ -220,15 +223,27 @@ map2(preds, names(preds), ~confusion_matrix_fig(.x,
                                                 c_test$stroke,
                                                 .y))
 
-#trim upsampled tree based on cp plot
+#trim upsampled tree based on cp plot at 129 splits
+set.seed(123)
 
+ctrl <- rpart.control(maxdepth = 129)
+up_model_trimmed <- rpart(stroke ~ ., 
+                          data = as.data.frame(c_train_up),
+                          method = "class", 
+                          cp = 0.0009088155)
 
+up_pred <- predict(up_model_trimmed, c_test, type = "class")
+up_cm <- binary_class_cm(up_pred, c_test$stroke)
 
+plotcp(up_model_trimmed)
 
-
-
-
-
+svg(paste0("figures/", "upsampled_decision_tree_pruned", "_cm.svg"))
+binary_visualiseR(train_labels = up_pred,
+                  truth_labels = c_test$stroke,
+                  class_label1 = "Stroke",
+                  class_label2 = "No Stroke",
+                  custom_title = "Confusion Matrix")
+dev.off
 
 
 
