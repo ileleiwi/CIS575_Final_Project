@@ -85,7 +85,7 @@ Considering the results from each unpruned decision tree, upsampling to correct 
 
 To produce a more refined decision tree model for future comparison with other modeling methods we pruned the upsampled decision tree at 129 splits based off of the upsampled model's cp plot. The tree optimization resulted in a more accurate model (shown below).
 
-![pruned up sampled tree](/figures/upsampled_decision_tree_pruned_cm.svg)
+![pruned up sampled tree](https://github.com/ileleiwi/CIS575_Final_Project/blob/main/figures/upsampled_decision_tree_pruned_cm.svg)
 
 # Random Forest Classification
 
