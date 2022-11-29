@@ -174,7 +174,7 @@ map(models, ~plotcp(.x))
 for(i in 1:length(models)){
   svg(paste0("figures/", names(models[i]), "_cp_plot.svg"))
   plotcp(models[[i]])
-  dev.off
+  dev.off()
 }
 
 #
@@ -182,6 +182,7 @@ names(models)
 plotcp(models[[1]])
 plotcp(models[[2]])
 plotcp(models[[3]])
+
 plotcp(models[[4]])
 
 
