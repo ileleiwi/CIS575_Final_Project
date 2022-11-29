@@ -237,13 +237,13 @@ up_cm <- binary_class_cm(up_pred, c_test$stroke)
 
 plotcp(up_model_trimmed)
 
-svg(paste0("figures/", "upsampled_decision_tree_pruned", "_cm.svg"))
+svg("figures/upsampled_decision_tree_pruned_cm.svg")
 binary_visualiseR(train_labels = up_pred,
                   truth_labels = c_test$stroke,
                   class_label1 = "Stroke",
                   class_label2 = "No Stroke",
                   custom_title = "Confusion Matrix")
-dev.off
+dev.off()
 
 
 
