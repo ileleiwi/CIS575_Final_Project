@@ -172,7 +172,7 @@ map(models, ~printcp(.x))
 map(models, ~plotcp(.x))
 
 for(i in 1:length(models)){
-  pdf(paste0("figures/", names(models[i]), "_cp_plots.pdf"))
+  svg(paste0("figures/", names(models[i]), "_cp_plot.svg"))
   plotcp(models[[i]])
   dev.off
 }
@@ -219,6 +219,7 @@ map2(preds, names(preds), ~confusion_matrix_fig(.x,
                                                 c_test$stroke,
                                                 .y))
 
+#trim upsampled tree based on cp plot
 
 
 

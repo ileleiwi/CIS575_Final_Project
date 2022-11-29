@@ -497,5 +497,9 @@ logodds <- numerator_age/denominator
 
 ta <- as.numeric(auc(rt))
 names(ta) <- "AUC"
-ggroc(rt)
+
+
+ggroc(rt) +
+  theme_bw() +
+  geom_abline(intercept = 1, slope = 1)
 
